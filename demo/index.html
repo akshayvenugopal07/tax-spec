@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tax Form Annotation Spec — Live Demo</title>
+<style>
+  :root {
+    --bg: #f6f5f2;
+    --panel: #ffffff;
+    --ink: #1b1b1f;
+    --muted: #6b6b76;
+    --line: #dcdad3;
+    --accent: #1f6f4a;
+    --accent-soft: #e6f3ec;
+    --mono: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16171a;
+      --panel: #1e1f23;
+      --ink: #ececf0;
+      --muted: #9a9aa5;
+      --line: #34353b;
+      --accent: #4fbf8a;
+      --accent-soft: #17362a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  header {
+    padding: 20px 24px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  header h1 { margin: 0 0 4px; font-size: 18px; }
+  header p { margin: 0; color: var(--muted); max-width: 70ch; }
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: 20px;
+    padding: 20px 24px 32px;
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: minmax(0, 1fr); }
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    min-width: 0;
+  }
+  .panel h2 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin: 0;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .form-stage {
+    position: relative;
+    margin: 16px;
+    background: repeating-linear-gradient(
+      var(--panel), var(--panel) 27px, var(--line) 27px, var(--line) 28px
+    );
+    border: 1px solid var(--line);
+    width: 612px;
+    height: 792px;
+    max-width: 100%;
+    transform-origin: top left;
+  }
+  .stage-wrap { overflow-x: auto; padding-bottom: 4px; }
+  .box {
+    position: absolute;
+    border: 1.5px dashed #b98a2f;
+    background: rgba(217, 155, 50, 0.08);
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    padding: 0 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    cursor: default;
+  }
+  .box[data-align="right"] { justify-content: flex-end; }
+  .box[data-align="center"] { justify-content: center; }
+  .box .value {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .box:hover { border-color: var(--accent); background: var(--accent-soft); z-index: 5; }
+  .box .tip {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    margin-bottom: 4px;
+    background: var(--ink);
+    color: var(--bg);
+    padding: 4px 7px;
+    border-radius: 5px;
+    font-size: 11px;
+    white-space: nowrap;
+    z-index: 10;
+  }
+  .box:hover .tip { display: block; }
+  textarea {
+    width: 100%;
+    height: 260px;
+    border: none;
+    background: var(--panel);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 12px 14px;
+    resize: vertical;
+    outline: none;
+  }
+  .stack .panel + .panel { margin-top: 16px; }
+  #status {
+    padding: 8px 14px;
+    font-family: var(--mono);
+    font-size: 12px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+  }
+  #status.error { color: #c0392b; }
+  #status.ok { color: var(--accent); }
+  .legend {
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--muted);
+    border-top: 1px solid var(--line);
+  }
+  code { background: var(--accent-soft); padding: 1px 5px; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Tax Form Annotation Spec — live, client-side resolver</h1>
+  <p>
+    Edit the annotation file or the taxpayer data below (both are plain JSON) and the mock
+    form on the left re-renders instantly — entirely in the browser, no server, no build step.
+    This runs <code>demo/app.js</code>, a plain-JS port of <code>src/resolver.ts</code>
+    implementing the spec in <a href="../SPEC.md">SPEC.md</a>.
+  </p>
+</header>
+
+<div class="layout">
+  <div class="panel">
+    <h2>Rendered form (boxes positioned + stamped from the annotation + data)</h2>
+    <div class="stage-wrap">
+      <div class="form-stage" id="stage"></div>
+    </div>
+    <div class="legend">Dashed box = a <code>FieldAnnotation</code>. Hover a box for its id, form line, and data path.</div>
+    <div id="status">Ready.</div>
+  </div>
+
+  <div class="stack">
+    <div class="panel">
+      <h2>Form annotation (FormTemplate JSON)</h2>
+      <textarea id="templateInput" spellcheck="false"></textarea>
+    </div>
+    <div class="panel">
+      <h2>Taxpayer data (nested JSON)</h2>
+      <textarea id="dataInput" spellcheck="false"></textarea>
+    </div>
+  </div>
+</div>
+
+<script id="defaultTemplate" type="application/json">
+{
+  "formId": "F1040",
+  "formVersion": "2024",
+  "title": "U.S. Individual Income Tax Return — Page 1 (excerpt)",
+  "pages": [
+    { "number": 1, "width": 612, "height": 792, "unit": "pt" }
+  ],
+  "fields": [
+    {
+      "id": "taxYear",
+      "formLine": "1040 Header",
+      "description": "Printed tax year — static, not sourced from taxpayer data.",
+      "page": 1,
+      "position": { "x": 36, "y": 40, "width": 60, "height": 16, "unit": "pt" },
+      "format": { "type": "text", "alignment": "left" },
+      "dataBinding": { "literal": "2024" }
+    },
+    {
+      "id": "taxpayerName",
+      "formLine": "1040 Name line",
+      "description": "Primary taxpayer full name.",
+      "page": 1,
+      "position": { "x": 36, "y": 90, "width": 260, "height": 16, "unit": "pt" },
+      "format": { "type": "text", "alignment": "left" },
+      "dataBinding": { "path": "$.primaryTaxpayer.firstName" }
+    },
+    {
+      "id": "taxpayerSsn",
+      "formLine": "1040 SSN box",
+      "page": 1,
+      "position": { "x": 468, "y": 90, "width": 108, "height": 16, "unit": "pt" },
+      "format": { "type": "ssn", "alignment": "right" },
+      "dataBinding": { "path": "$.primaryTaxpayer.ssn" }
+    },
+    {
+      "id": "mfjCheckbox",
+      "formLine": "1040 Filing status — Married filing jointly",
+      "page": 1,
+      "position": { "x": 200, "y": 120, "width": 12, "height": 12, "unit": "pt" },
+      "format": { "type": "checkbox", "checkboxMark": "X" },
+      "dataBinding": { "literal": true },
+      "conditional": { "showIf": "@.filingStatus == 'marriedFilingJointly'" }
+    },
+    {
+      "id": "line1a",
+      "formLine": "1040 Line 1a",
+      "description": "Total amount from Form(s) W-2, box 1, summed across every employer.",
+      "page": 1,
+      "position": { "x": 468, "y": 214, "width": 92, "height": 14, "unit": "pt" },
+      "format": { "type": "currency", "decimalPlaces": 0, "negativeStyle": "parentheses" },
+      "dataBinding": { "path": "$.income.w2Forms[*].box1Wages", "aggregate": "sum", "transform": "round" }
+    },
+    {
+      "id": "line25a",
+      "formLine": "1040 Line 25a",
+      "description": "Federal income tax withheld per Form(s) W-2, box 2, summed.",
+      "page": 1,
+      "position": { "x": 468, "y": 402, "width": 92, "height": 14, "unit": "pt" },
+      "format": { "type": "currency", "decimalPlaces": 0 },
+      "dataBinding": { "path": "$.income.w2Forms[*].box2FederalTaxWithheld", "aggregate": "sum", "transform": "round" }
+    },
+    {
+      "id": "caWagesOnly",
+      "formLine": "Example filter — CA-sourced wages only",
+      "description": "Demonstrates a filter predicate: wages from CA employers only.",
+      "page": 1,
+      "position": { "x": 468, "y": 430, "width": 92, "height": 14, "unit": "pt" },
+      "format": { "type": "currency", "decimalPlaces": 0 },
+      "dataBinding": { "path": "$.income.w2Forms[?(@.employerState=='CA')].box1Wages", "aggregate": "sum" }
+    },
+    {
+      "id": "schB_interest_row",
+      "formLine": "Schedule B Part I — interest payer row (template)",
+      "description": "Repeats once per interest payer; each instance offsets 16pt down from the previous.",
+      "page": 1,
+      "position": { "x": 72, "y": 520, "width": 300, "height": 14, "unit": "pt" },
+      "format": { "type": "text", "alignment": "left" },
+      "dataBinding": { "path": "@.payerName" },
+      "repeat": { "over": "$.income.interestPayers[*]", "rowHeight": 16, "maxRows": 4, "overflowFormId": "F1040-SchB-Cont" }
+    },
+    {
+      "id": "schB_interest_amount_row",
+      "formLine": "Schedule B Part I — interest amount row (template)",
+      "page": 1,
+      "position": { "x": 468, "y": 520, "width": 92, "height": 14, "unit": "pt" },
+      "format": { "type": "currency", "decimalPlaces": 2, "negativeStyle": "parentheses" },
+      "dataBinding": { "path": "@.amount" },
+      "repeat": { "over": "$.income.interestPayers[*]", "rowHeight": 16, "maxRows": 4, "overflowFormId": "F1040-SchB-Cont" }
+    }
+  ]
+}
+</script>
+<script id="defaultData" type="application/json">
+{
+  "filingStatus": "marriedFilingJointly",
+  "taxYear": 2024,
+  "primaryTaxpayer": {
+    "firstName": "Jordan",
+    "lastName": "Rivera",
+    "ssn": "123456789"
+  },
+  "income": {
+    "w2Forms": [
+      {
+        "employerName": "Acme Robotics Inc",
+        "employerState": "CA",
+        "box1Wages": 84500.0,
+        "box2FederalTaxWithheld": 11200.5
+      },
+      {
+        "employerName": "Bright Path Consulting",
+        "employerState": "NV",
+        "box1Wages": 19250.75,
+        "box2FederalTaxWithheld": 2100.0
+      }
+    ],
+    "interestPayers": [
+      { "payerName": "First National Bank", "amount": 412.33 },
+      { "payerName": "Union Credit Co-op", "amount": 88.1 },
+      { "payerName": "Meridian Savings", "amount": 15.0 }
+    ]
+  },
+  "dependents": [
+    { "firstName": "Casey", "lastName": "Rivera", "relationship": "child", "ssn": "234567890" },
+    { "firstName": "Morgan", "lastName": "Rivera", "relationship": "child", "ssn": "345678901" }
+  ]
+}
+</script>
+<script src="app.js"></script>
+<script>
+  const stage = document.getElementById("stage");
+  const status = document.getElementById("status");
+  const templateInput = document.getElementById("templateInput");
+  const dataInput = document.getElementById("dataInput");
+
+  function loadDefaults() {
+    // Inlined (rather than fetched) so this page works standalone from a
+    // file:// URL with no local server — see /examples for the canonical
+    // copies these are kept in sync with.
+    templateInput.value = document.getElementById("defaultTemplate").textContent.trim();
+    dataInput.value = document.getElementById("defaultData").textContent.trim();
+    render();
+  }
+
+  function render() {
+    stage.innerHTML = "";
+    let template, data;
+    try {
+      template = JSON.parse(templateInput.value);
+      data = JSON.parse(dataInput.value);
+    } catch (e) {
+      status.textContent = "JSON parse error: " + e.message;
+      status.className = "error";
+      return;
+    }
+
+    try {
+      const instructions = TaxSpec.resolveForm(template, data);
+      for (const ins of instructions) {
+        const el = document.createElement("div");
+        el.className = "box";
+        el.dataset.align = ins.align;
+        el.style.left = ins.x + "px";
+        el.style.top = ins.y + "px";
+        el.style.width = ins.width + "px";
+        el.style.height = ins.height + "px";
+        const valueSpan = document.createElement("span");
+        valueSpan.className = "value";
+        valueSpan.textContent = ins.text;
+        el.appendChild(valueSpan);
+
+        const field = template.fields.find((f) => f.id === ins.id);
+        const tip = document.createElement("div");
+        tip.className = "tip";
+        tip.textContent = ins.id + " — " + (field ? field.formLine : "") +
+          (field && field.dataBinding.path ? "  ·  " + field.dataBinding.path : "");
+        el.appendChild(tip);
+
+        stage.appendChild(el);
+      }
+      status.textContent = "Resolved " + instructions.length + " box(es).";
+      status.className = "ok";
+    } catch (e) {
+      status.textContent = "Resolve error: " + e.message;
+      status.className = "error";
+    }
+  }
+
+  templateInput.addEventListener("input", render);
+  dataInput.addEventListener("input", render);
+  loadDefaults();
+</script>
+</body>
+</html>

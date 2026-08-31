@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tax-spec.example/schema/form-annotation.schema.json",
+  "title": "FormTemplate",
+  "description": "A tax form annotation document. See /SPEC.md for the full specification.",
+  "type": "object",
+  "required": ["formId", "formVersion", "pages", "fields"],
+  "additionalProperties": false,
+  "properties": {
+    "formId": { "type": "string", "minLength": 1 },
+    "formVersion": { "type": "string", "minLength": 1 },
+    "title": { "type": "string" },
+    "pages": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/Page" }
+    },
+    "fields": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/FieldAnnotation" }
+    }
+  },
+  "$defs": {
+    "Page": {
+      "type": "object",
+      "required": ["number", "width", "height", "unit"],
+      "additionalProperties": false,
+      "properties": {
+        "number": { "type": "integer", "minimum": 1 },
+        "width": { "type": "number", "exclusiveMinimum": 0 },
+        "height": { "type": "number", "exclusiveMinimum": 0 },
+        "unit": { "$ref": "#/$defs/Unit" }
+      }
+    },
+    "Unit": { "type": "string", "enum": ["pt", "in", "mm"] },
+    "Position": {
+      "type": "object",
+      "required": ["x", "y", "width", "height", "unit"],
+      "additionalProperties": false,
+      "properties": {
+        "x": { "type": "number", "minimum": 0 },
+        "y": { "type": "number", "minimum": 0 },
+        "width": { "type": "number", "exclusiveMinimum": 0 },
+        "height": { "type": "number", "exclusiveMinimum": 0 },
+        "unit": { "$ref": "#/$defs/Unit" }
+      }
+    },
+    "FormatType": {
+      "type": "string",
+      "enum": ["currency", "number", "integer", "percent", "text", "date", "ssn", "ein", "phone", "checkbox", "signature"]
+    },
+    "FormatSpec": {
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "$ref": "#/$defs/FormatType" },
+        "decimalPlaces": { "type": "integer", "minimum": 0 },
+        "negativeStyle": { "type": "string", "enum": ["parentheses", "minus", "none"] },
+        "alignment": { "type": "string", "enum": ["left", "center", "right"] },
+        "thousandsSeparator": { "type": "boolean" },
+        "font": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "family": { "type": "string" },
+            "size": { "type": "number", "exclusiveMinimum": 0 },
+            "weight": { "type": "string" }
+          }
+        },
+        "maxLength": { "type": "integer", "minimum": 1 },
+        "textTransform": { "type": "string", "enum": ["uppercase", "none"] },
+        "dateFormat": { "type": "string" },
+        "checkboxMark": { "type": "string", "enum": ["X", "check"] },
+        "overflow": { "type": "string", "enum": ["shrink-to-fit", "wrap", "truncate", "error"] }
+      }
+    },
+    "Aggregate": {
+      "type": "string",
+      "enum": ["sum", "count", "avg", "min", "max", "first", "last", "join"]
+    },
+    "Transform": {
+      "type": "string",
+      "enum": ["abs", "negate", "round"]
+    },
+    "DataBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "aggregate": { "$ref": "#/$defs/Aggregate" },
+        "transform": { "$ref": "#/$defs/Transform" },
+        "fallback": {},
+        "literal": {}
+      },
+      "oneOf": [
+        { "required": ["path"] },
+        { "required": ["literal"] }
+      ]
+    },
+    "ConditionalSpec": {
+      "type": "object",
+      "required": ["showIf"],
+      "additionalProperties": false,
+      "properties": {
+        "showIf": { "type": "string", "minLength": 1 }
+      }
+    },
+    "RepeatSpec": {
+      "type": "object",
+      "required": ["over", "rowHeight", "maxRows"],
+      "additionalProperties": false,
+      "properties": {
+        "over": { "type": "string", "minLength": 1 },
+        "rowHeight": { "type": "number", "exclusiveMinimum": 0 },
+        "maxRows": { "type": "integer", "minimum": 1 },
+        "overflowFormId": { "type": "string" }
+      }
+    },
+    "FieldAnnotation": {
+      "type": "object",
+      "required": ["id", "formLine", "page", "position", "format", "dataBinding"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "formLine": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "page": { "type": "integer", "minimum": 1 },
+        "position": { "$ref": "#/$defs/Position" },
+        "format": { "$ref": "#/$defs/FormatSpec" },
+        "dataBinding": { "$ref": "#/$defs/DataBinding" },
+        "conditional": { "$ref": "#/$defs/ConditionalSpec" },
+        "repeat": { "$ref": "#/$defs/RepeatSpec" }
+      }
+    }
+  }
+}

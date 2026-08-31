@@ -1,0 +1,34 @@
+{
+  "filingStatus": "marriedFilingJointly",
+  "taxYear": 2024,
+  "primaryTaxpayer": {
+    "firstName": "Jordan",
+    "lastName": "Rivera",
+    "ssn": "123456789"
+  },
+  "income": {
+    "w2Forms": [
+      {
+        "employerName": "Acme Robotics Inc",
+        "employerState": "CA",
+        "box1Wages": 84500.0,
+        "box2FederalTaxWithheld": 11200.5
+      },
+      {
+        "employerName": "Bright Path Consulting",
+        "employerState": "NV",
+        "box1Wages": 19250.75,
+        "box2FederalTaxWithheld": 2100.0
+      }
+    ],
+    "interestPayers": [
+      { "payerName": "First National Bank", "amount": 412.33 },
+      { "payerName": "Union Credit Co-op", "amount": 88.1 },
+      { "payerName": "Meridian Savings", "amount": 15.0 }
+    ]
+  },
+  "dependents": [
+    { "firstName": "Casey", "lastName": "Rivera", "relationship": "child", "ssn": "234567890" },
+    { "firstName": "Morgan", "lastName": "Rivera", "relationship": "child", "ssn": "345678901" }
+  ]
+}
