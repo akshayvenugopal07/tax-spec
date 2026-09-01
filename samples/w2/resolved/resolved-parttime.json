@@ -1,0 +1,340 @@
+[
+  {
+    "id": "w2.employee.ssn",
+    "page": 1,
+    "position": {
+      "x": 195,
+      "y": 12,
+      "width": 140,
+      "height": 20,
+      "unit": "pt"
+    },
+    "value": "XXX-XX-3333"
+  },
+  {
+    "id": "w2.employer.ein",
+    "page": 1,
+    "position": {
+      "x": 195,
+      "y": 52,
+      "width": 110,
+      "height": 16,
+      "unit": "pt"
+    },
+    "value": "33-4455667"
+  },
+  {
+    "id": "w2.box1.wages",
+    "page": 1,
+    "position": {
+      "x": 500,
+      "y": 52,
+      "width": 90,
+      "height": 16,
+      "unit": "pt"
+    },
+    "value": "$15,600.00"
+  },
+  {
+    "id": "w2.box2.fedTaxWithheld",
+    "page": 1,
+    "position": {
+      "x": 605,
+      "y": 52,
+      "width": 80,
+      "height": 16,
+      "unit": "pt"
+    },
+    "value": "$940.00"
+  },
+  {
+    "id": "w2.employer.name",
+    "page": 1,
+    "position": {
+      "x": 70,
+      "y": 100,
+      "width": 200,
+      "height": 15,
+      "unit": "pt"
+    },
+    "value": "Lakeside Retail Group"
+  },
+  {
+    "id": "w2.employer.street",
+    "page": 1,
+    "position": {
+      "x": 70,
+      "y": 115,
+      "width": 200,
+      "height": 15,
+      "unit": "pt"
+    },
+    "value": "200 Commerce Dr"
+  },
+  {
+    "id": "w2.employer.cityStateZip",
+    "page": 1,
+    "position": {
+      "x": 70,
+      "y": 130,
+      "width": 200,
+      "height": 15,
+      "unit": "pt"
+    },
+    "value": "Lakeside, OH 43001"
+  },
+  {
+    "id": "w2.box3.ssWages",
+    "page": 1,
+    "position": {
+      "x": 500,
+      "y": 77,
+      "width": 90,
+      "height": 16,
+      "unit": "pt"
+    },
+    "value": "$15,600.00"
+  },
+  {
+    "id": "w2.box4.ssTaxWithheld",
+    "page": 1,
+    "position": {
+      "x": 605,
+      "y": 77,
+      "width": 80,
+      "height": 16,
+      "unit": "pt"
+    },
+    "value": "$967.20"
+  },
+  {
+    "id": "w2.box5.medicareWages",
+    "page": 1,
+    "position": {
+      "x": 500,
+      "y": 102,
+      "width": 90,
+      "height": 16,
+      "unit": "pt"
+    },
+    "value": "$15,600.00"
+  },
+  {
+    "id": "w2.box6.medicareTaxWithheld",
+    "page": 1,
+    "position": {
+      "x": 605,
+      "y": 102,
+      "width": 80,
+      "height": 16,
+      "unit": "pt"
+    },
+    "value": "$226.20"
+  },
+  {
+    "id": "w2.controlNumber",
+    "page": 1,
+    "position": {
+      "x": 70,
+      "y": 178,
+      "width": 90,
+      "height": 16,
+      "unit": "pt"
+    },
+    "value": "PT-4471"
+  },
+  {
+    "id": "w2.employee.name",
+    "page": 1,
+    "position": {
+      "x": 70,
+      "y": 220,
+      "width": 200,
+      "height": 15,
+      "unit": "pt"
+    },
+    "value": "Marcus T    OWENS"
+  },
+  {
+    "id": "w2.employee.street",
+    "page": 1,
+    "position": {
+      "x": 70,
+      "y": 235,
+      "width": 200,
+      "height": 15,
+      "unit": "pt"
+    },
+    "value": "77 Willow Ln"
+  },
+  {
+    "id": "w2.employee.cityStateZip",
+    "page": 1,
+    "position": {
+      "x": 70,
+      "y": 250,
+      "width": 200,
+      "height": 15,
+      "unit": "pt"
+    },
+    "value": "Lakeside, OH 43001"
+  },
+  {
+    "id": "w2.box12.code",
+    "page": 1,
+    "position": {
+      "x": 592,
+      "y": 220,
+      "width": 25,
+      "height": 16,
+      "unit": "pt"
+    },
+    "row": 0,
+    "value": "DD"
+  },
+  {
+    "id": "w2.box12.amount",
+    "page": 1,
+    "position": {
+      "x": 615,
+      "y": 220,
+      "width": 90,
+      "height": 16,
+      "unit": "pt"
+    },
+    "row": 0,
+    "value": "$2,100.00"
+  },
+  {
+    "id": "w2.box13.statutoryEmployee",
+    "page": 1,
+    "position": {
+      "x": 356,
+      "y": 218,
+      "width": 14,
+      "height": 14,
+      "unit": "pt"
+    },
+    "value": ""
+  },
+  {
+    "id": "w2.box13.retirementPlan",
+    "page": 1,
+    "position": {
+      "x": 458,
+      "y": 218,
+      "width": 14,
+      "height": 14,
+      "unit": "pt"
+    },
+    "value": ""
+  },
+  {
+    "id": "w2.box13.thirdPartySickPay",
+    "page": 1,
+    "position": {
+      "x": 551,
+      "y": 218,
+      "width": 14,
+      "height": 14,
+      "unit": "pt"
+    },
+    "value": "X"
+  },
+  {
+    "id": "w2.box15.state",
+    "page": 1,
+    "position": {
+      "x": 8,
+      "y": 370,
+      "width": 25,
+      "height": 15,
+      "unit": "pt"
+    },
+    "value": "OH"
+  },
+  {
+    "id": "w2.box15.employerStateId",
+    "page": 1,
+    "position": {
+      "x": 70,
+      "y": 370,
+      "width": 60,
+      "height": 15,
+      "unit": "pt"
+    },
+    "value": "OH-55219"
+  },
+  {
+    "id": "w2.box16.stateWages",
+    "page": 1,
+    "position": {
+      "x": 200,
+      "y": 370,
+      "width": 70,
+      "height": 15,
+      "unit": "pt"
+    },
+    "value": "$15,600"
+  },
+  {
+    "id": "w2.box17.stateIncomeTax",
+    "page": 1,
+    "position": {
+      "x": 350,
+      "y": 370,
+      "width": 60,
+      "height": 15,
+      "unit": "pt"
+    },
+    "value": "$468"
+  },
+  {
+    "id": "w2.box18.localWages",
+    "page": 1,
+    "position": {
+      "x": 500,
+      "y": 370,
+      "width": 70,
+      "height": 15,
+      "unit": "pt"
+    },
+    "skipped": true
+  },
+  {
+    "id": "w2.box19.localIncomeTax",
+    "page": 1,
+    "position": {
+      "x": 630,
+      "y": 370,
+      "width": 40,
+      "height": 15,
+      "unit": "pt"
+    },
+    "skipped": true
+  },
+  {
+    "id": "w2.box20.localityName",
+    "page": 1,
+    "position": {
+      "x": 675,
+      "y": 370,
+      "width": 35,
+      "height": 15,
+      "unit": "pt"
+    },
+    "skipped": true
+  },
+  {
+    "id": "w2.taxYear",
+    "page": 1,
+    "position": {
+      "x": 300,
+      "y": 415,
+      "width": 90,
+      "height": 30,
+      "unit": "pt"
+    },
+    "value": "2024"
+  }
+]
