@@ -1,0 +1,280 @@
+{
+  "formId": "W-2",
+  "formVersion": "2014",
+  "title": "Wage and Tax Statement",
+  "issuingAgency": "SSA",
+  "pages": [
+    { "number": 1, "width": 720, "height": 486, "unit": "pt" }
+  ],
+  "fields": [
+    {
+      "id": "w2.employee.ssn",
+      "formLine": "Box a",
+      "description": "Employee's social security number",
+      "page": 1,
+      "position": { "x": 195, "y": 12, "width": 140, "height": 20, "unit": "pt" },
+      "format": { "type": "ssn", "alignment": "center", "mask": "XXX-XX-1234" },
+      "dataBinding": { "path": "$.employee.ssn" }
+    },
+    {
+      "id": "w2.employer.ein",
+      "formLine": "Box b",
+      "description": "Employer identification number (EIN)",
+      "page": 1,
+      "position": { "x": 195, "y": 52, "width": 110, "height": 16, "unit": "pt" },
+      "format": { "type": "ein", "alignment": "left" },
+      "dataBinding": { "path": "$.employer.ein" }
+    },
+    {
+      "id": "w2.box1.wages",
+      "formLine": "Box 1",
+      "description": "Wages, tips, other compensation",
+      "page": 1,
+      "position": { "x": 500, "y": 52, "width": 90, "height": 16, "unit": "pt" },
+      "format": { "type": "currency", "decimalPlaces": 2, "alignment": "right", "negativeStyle": "parentheses" },
+      "dataBinding": { "path": "$.box1Wages", "fallback": 0 }
+    },
+    {
+      "id": "w2.box2.fedTaxWithheld",
+      "formLine": "Box 2",
+      "description": "Federal income tax withheld",
+      "page": 1,
+      "position": { "x": 605, "y": 52, "width": 80, "height": 16, "unit": "pt" },
+      "format": { "type": "currency", "decimalPlaces": 2, "alignment": "right", "negativeStyle": "parentheses" },
+      "dataBinding": { "path": "$.box2FederalTaxWithheld", "fallback": 0 }
+    },
+
+    {
+      "id": "w2.employer.name",
+      "formLine": "Box c",
+      "description": "Employer's name",
+      "page": 1,
+      "position": { "x": 70, "y": 100, "width": 200, "height": 15, "unit": "pt" },
+      "format": { "type": "text", "alignment": "left" },
+      "dataBinding": { "path": "$.employer.name" }
+    },
+    {
+      "id": "w2.employer.street",
+      "formLine": "Box c",
+      "description": "Employer's street address",
+      "page": 1,
+      "position": { "x": 70, "y": 115, "width": 200, "height": 15, "unit": "pt" },
+      "format": { "type": "text", "alignment": "left" },
+      "dataBinding": { "path": "$.employer.street" }
+    },
+    {
+      "id": "w2.employer.cityStateZip",
+      "formLine": "Box c",
+      "description": "Employer's city, state and ZIP code",
+      "page": 1,
+      "position": { "x": 70, "y": 130, "width": 200, "height": 15, "unit": "pt" },
+      "format": { "type": "text", "alignment": "left" },
+      "dataBinding": { "path": "$.employer.cityStateZip" }
+    },
+
+    {
+      "id": "w2.box3.ssWages",
+      "formLine": "Box 3",
+      "description": "Social security wages",
+      "page": 1,
+      "position": { "x": 500, "y": 77, "width": 90, "height": 16, "unit": "pt" },
+      "format": { "type": "currency", "decimalPlaces": 2, "alignment": "right", "negativeStyle": "parentheses" },
+      "dataBinding": { "path": "$.box3SocialSecurityWages", "fallback": 0 }
+    },
+    {
+      "id": "w2.box4.ssTaxWithheld",
+      "formLine": "Box 4",
+      "description": "Social security tax withheld",
+      "page": 1,
+      "position": { "x": 605, "y": 77, "width": 80, "height": 16, "unit": "pt" },
+      "format": { "type": "currency", "decimalPlaces": 2, "alignment": "right", "negativeStyle": "parentheses" },
+      "dataBinding": { "path": "$.box4SocialSecurityTaxWithheld", "fallback": 0 }
+    },
+    {
+      "id": "w2.box5.medicareWages",
+      "formLine": "Box 5",
+      "description": "Medicare wages and tips",
+      "page": 1,
+      "position": { "x": 500, "y": 102, "width": 90, "height": 16, "unit": "pt" },
+      "format": { "type": "currency", "decimalPlaces": 2, "alignment": "right", "negativeStyle": "parentheses" },
+      "dataBinding": { "path": "$.box5MedicareWages", "fallback": 0 }
+    },
+    {
+      "id": "w2.box6.medicareTaxWithheld",
+      "formLine": "Box 6",
+      "description": "Medicare tax withheld",
+      "page": 1,
+      "position": { "x": 605, "y": 102, "width": 80, "height": 16, "unit": "pt" },
+      "format": { "type": "currency", "decimalPlaces": 2, "alignment": "right", "negativeStyle": "parentheses" },
+      "dataBinding": { "path": "$.box6MedicareTaxWithheld", "fallback": 0 }
+    },
+
+    {
+      "id": "w2.controlNumber",
+      "formLine": "Box d",
+      "description": "Control number",
+      "page": 1,
+      "position": { "x": 70, "y": 178, "width": 90, "height": 16, "unit": "pt" },
+      "format": { "type": "text", "alignment": "left" },
+      "dataBinding": { "path": "$.controlNumber", "fallback": "" }
+    },
+
+    {
+      "id": "w2.employee.name",
+      "formLine": "Box e",
+      "description": "Employee's first name, initial and last name",
+      "page": 1,
+      "position": { "x": 70, "y": 220, "width": 200, "height": 15, "unit": "pt" },
+      "format": { "type": "text", "alignment": "left" },
+      "dataBinding": { "path": "$.employee.name" }
+    },
+    {
+      "id": "w2.employee.street",
+      "formLine": "Box e/f",
+      "description": "Employee's street address",
+      "page": 1,
+      "position": { "x": 70, "y": 235, "width": 200, "height": 15, "unit": "pt" },
+      "format": { "type": "text", "alignment": "left" },
+      "dataBinding": { "path": "$.employee.street" }
+    },
+    {
+      "id": "w2.employee.cityStateZip",
+      "formLine": "Box e/f",
+      "description": "Employee's city, state and ZIP code",
+      "page": 1,
+      "position": { "x": 70, "y": 250, "width": 200, "height": 15, "unit": "pt" },
+      "format": { "type": "text", "alignment": "left" },
+      "dataBinding": { "path": "$.employee.cityStateZip" }
+    },
+
+    {
+      "id": "w2.box12.code",
+      "formLine": "Box 12a-d",
+      "description": "Box 12 code column. Repeats once per entry in box12Entries.",
+      "page": 1,
+      "position": { "x": 592, "y": 220, "width": 25, "height": 16, "unit": "pt" },
+      "format": { "type": "text", "alignment": "left" },
+      "dataBinding": { "path": "$.box12Entries[*].code" },
+      "repeat": { "sourcePath": "$.box12Entries", "rowHeight": 25, "maxRows": 4 }
+    },
+    {
+      "id": "w2.box12.amount",
+      "formLine": "Box 12a-d",
+      "description": "Box 12 amount column. Repeats once per entry in box12Entries, aligned with w2.box12.code.",
+      "page": 1,
+      "position": { "x": 615, "y": 220, "width": 90, "height": 16, "unit": "pt" },
+      "format": { "type": "currency", "decimalPlaces": 2, "alignment": "right" },
+      "dataBinding": { "path": "$.box12Entries[*].amount" },
+      "repeat": { "sourcePath": "$.box12Entries", "rowHeight": 25, "maxRows": 4 }
+    },
+
+    {
+      "id": "w2.box13.statutoryEmployee",
+      "formLine": "Box 13",
+      "description": "Statutory employee checkbox",
+      "page": 1,
+      "position": { "x": 356, "y": 218, "width": 14, "height": 14, "unit": "pt" },
+      "format": { "type": "boolean" },
+      "dataBinding": { "path": "$.box13.statutoryEmployee", "fallback": false }
+    },
+    {
+      "id": "w2.box13.retirementPlan",
+      "formLine": "Box 13",
+      "description": "Retirement plan checkbox",
+      "page": 1,
+      "position": { "x": 458, "y": 218, "width": 14, "height": 14, "unit": "pt" },
+      "format": { "type": "boolean" },
+      "dataBinding": { "path": "$.box13.retirementPlan", "fallback": false }
+    },
+    {
+      "id": "w2.box13.thirdPartySickPay",
+      "formLine": "Box 13",
+      "description": "Third-party sick pay checkbox",
+      "page": 1,
+      "position": { "x": 551, "y": 218, "width": 14, "height": 14, "unit": "pt" },
+      "format": { "type": "boolean" },
+      "dataBinding": { "path": "$.box13.thirdPartySickPay", "fallback": false }
+    },
+
+    {
+      "id": "w2.box15.state",
+      "formLine": "Box 15",
+      "description": "State",
+      "page": 1,
+      "position": { "x": 8, "y": 370, "width": 25, "height": 15, "unit": "pt" },
+      "format": { "type": "text", "alignment": "left" },
+      "dataBinding": { "path": "$.state.state" },
+      "conditional": { "path": "$.state.state", "exists": true }
+    },
+    {
+      "id": "w2.box15.employerStateId",
+      "formLine": "Box 15",
+      "description": "Employer's state ID number",
+      "page": 1,
+      "position": { "x": 70, "y": 370, "width": 60, "height": 15, "unit": "pt" },
+      "format": { "type": "text", "alignment": "left" },
+      "dataBinding": { "path": "$.state.employerStateId" },
+      "conditional": { "path": "$.state.state", "exists": true }
+    },
+    {
+      "id": "w2.box16.stateWages",
+      "formLine": "Box 16",
+      "description": "State wages, tips, etc.",
+      "page": 1,
+      "position": { "x": 200, "y": 370, "width": 70, "height": 15, "unit": "pt" },
+      "format": { "type": "currency", "decimalPlaces": 0, "alignment": "right" },
+      "dataBinding": { "path": "$.state.stateWages", "fallback": 0 },
+      "conditional": { "path": "$.state.state", "exists": true }
+    },
+    {
+      "id": "w2.box17.stateIncomeTax",
+      "formLine": "Box 17",
+      "description": "State income tax",
+      "page": 1,
+      "position": { "x": 350, "y": 370, "width": 60, "height": 15, "unit": "pt" },
+      "format": { "type": "currency", "decimalPlaces": 0, "alignment": "right" },
+      "dataBinding": { "path": "$.state.stateIncomeTax", "fallback": 0 },
+      "conditional": { "path": "$.state.state", "exists": true }
+    },
+    {
+      "id": "w2.box18.localWages",
+      "formLine": "Box 18",
+      "description": "Local wages, tips, etc.",
+      "page": 1,
+      "position": { "x": 500, "y": 370, "width": 70, "height": 15, "unit": "pt" },
+      "format": { "type": "currency", "decimalPlaces": 0, "alignment": "right" },
+      "dataBinding": { "path": "$.state.localWages", "fallback": 0 },
+      "conditional": { "path": "$.state.localityName", "exists": true }
+    },
+    {
+      "id": "w2.box19.localIncomeTax",
+      "formLine": "Box 19",
+      "description": "Local income tax",
+      "page": 1,
+      "position": { "x": 630, "y": 370, "width": 40, "height": 15, "unit": "pt" },
+      "format": { "type": "currency", "decimalPlaces": 0, "alignment": "right" },
+      "dataBinding": { "path": "$.state.localIncomeTax", "fallback": 0 },
+      "conditional": { "path": "$.state.localityName", "exists": true }
+    },
+    {
+      "id": "w2.box20.localityName",
+      "formLine": "Box 20",
+      "description": "Locality name",
+      "page": 1,
+      "position": { "x": 675, "y": 370, "width": 35, "height": 15, "unit": "pt" },
+      "format": { "type": "text", "alignment": "left" },
+      "dataBinding": { "path": "$.state.localityName" },
+      "conditional": { "path": "$.state.localityName", "exists": true }
+    },
+
+    {
+      "id": "w2.taxYear",
+      "formLine": "Form footer",
+      "description": "Tax year this W-2 covers",
+      "page": 1,
+      "position": { "x": 300, "y": 415, "width": 90, "height": 30, "unit": "pt" },
+      "format": { "type": "text", "alignment": "left" },
+      "dataBinding": { "path": "$.taxYear" }
+    }
+  ]
+}

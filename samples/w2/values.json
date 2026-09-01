@@ -1,0 +1,41 @@
+{
+  "employee": {
+    "ssn": "123-45-6789",
+    "name": "Jane A    DOE",
+    "street": "123 Elm Street",
+    "cityStateZip": "Anywhere Else, PA 23456"
+  },
+  "employer": {
+    "ein": "11-2233445",
+    "name": "The Big Company",
+    "street": "123 Main Street",
+    "cityStateZip": "Anywhere, PA 12345"
+  },
+  "controlNumber": "A1B2",
+  "box1Wages": 48500.00,
+  "box2FederalTaxWithheld": 6835.00,
+  "box3SocialSecurityWages": 50000.00,
+  "box4SocialSecurityTaxWithheld": 3100.00,
+  "box5MedicareWages": 50000.00,
+  "box6MedicareTaxWithheld": 725.00,
+  "box12Entries": [
+    { "code": "D", "amount": 1500.00 },
+    { "code": "DD", "amount": 1000.00 },
+    { "code": "P", "amount": 4800.00 }
+  ],
+  "box13": {
+    "statutoryEmployee": false,
+    "retirementPlan": true,
+    "thirdPartySickPay": false
+  },
+  "state": {
+    "state": "PA",
+    "employerStateId": "1235",
+    "stateWages": 50000,
+    "stateIncomeTax": 1535,
+    "localWages": 50000,
+    "localIncomeTax": 750,
+    "localityName": "MU"
+  },
+  "taxYear": "2014"
+}

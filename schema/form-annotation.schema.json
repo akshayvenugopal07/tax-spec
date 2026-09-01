@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tax-spec.example/schema/form-annotation.schema.json",
+  "title": "FormTemplate",
+  "description": "An annotation file describing where every box on a U.S. tax form is, how it's formatted, and which value from a taxpayer's data belongs in it. See SPEC.md.",
+  "type": "object",
+  "required": ["formId", "formVersion", "title", "pages", "fields"],
+  "additionalProperties": false,
+  "properties": {
+    "formId": {
+      "type": "string",
+      "description": "Stable identifier for the form, e.g. \"W-2\", \"1099-INT\", \"F1040\".",
+      "minLength": 1
+    },
+    "formVersion": {
+      "type": "string",
+      "description": "Tax year the layout matches, e.g. \"2024\". Forms are revised yearly.",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "description": "Official form title, for display."
+    },
+    "issuingAgency": {
+      "type": "string",
+      "description": "Agency that publishes this form's official layout.",
+      "enum": ["IRS", "SSA"]
+    },
+    "pages": {
+      "type": "array",
+      "description": "Physical page geometry, one entry per page of the form.",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/Page" }
+    },
+    "fields": {
+      "type": "array",
+      "description": "One entry per printable box, or per repeating box template.",
+      "items": { "$ref": "#/$defs/FieldAnnotation" }
+    }
+  },
+
+  "$defs": {
+    "Unit": {
+      "type": "string",
+      "enum": ["pt", "in", "mm"],
+      "description": "pt (1/72 in) is the normalized internal unit; in/mm are legal for authoring convenience."
+    },
+
+    "Page": {
+      "type": "object",
+      "required": ["number", "width", "height", "unit"],
+      "additionalProperties": false,
+      "properties": {
+        "number": { "type": "integer", "minimum": 1, "description": "1-indexed page number." },
+        "width": { "type": "number", "exclusiveMinimum": 0 },
+        "height": { "type": "number", "exclusiveMinimum": 0 },
+        "unit": { "$ref": "#/$defs/Unit" }
+      }
+    },
+
+    "Position": {
+      "type": "object",
+      "description": "Top-left origin, x increasing right, y increasing down. Measured directly off the form's official published layout.",
+      "required": ["x", "y", "width", "height", "unit"],
+      "additionalProperties": false,
+      "properties": {
+        "x": { "type": "number", "minimum": 0 },
+        "y": { "type": "number", "minimum": 0 },
+        "width": { "type": "number", "exclusiveMinimum": 0 },
+        "height": { "type": "number", "exclusiveMinimum": 0 },
+        "unit": { "$ref": "#/$defs/Unit" }
+      }
+    },
+
+    "FormatSpec": {
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["currency", "number", "percent", "date", "ssn", "ein", "text", "boolean", "literal"]
+        },
+        "decimalPlaces": { "type": "integer", "minimum": 0, "description": "currency, number, percent." },
+        "alignment": { "type": "string", "enum": ["left", "right", "center"] },
+        "negativeStyle": {
+          "type": "string",
+          "enum": ["minus", "parentheses", "redText"],
+          "description": "currency, number. minus: \"-100.00\". parentheses: \"(100.00)\" (accounting style). redText: renderer hint only, no ASCII change."
+        },
+        "dateFormat": { "type": "string", "description": "date, e.g. \"MM/DD/YYYY\"." },
+        "mask": { "type": "string", "description": "ssn, ein, e.g. \"XXX-XX-1234\"." },
+        "literalValue": { "type": "string", "description": "Required when type is \"literal\": static form text, not taxpayer data." }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "literal" } }, "required": ["type"] },
+          "then": { "required": ["literalValue"] }
+        }
+      ]
+    },
+
+    "DataBinding": {
+      "type": "object",
+      "required": ["path"],
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "description": "JSONPath-lite expression into the taxpayer's data document. Supports dot access, array indices, [*] wildcards, and [?(@.field==value)] filters."
+        },
+        "aggregate": {
+          "type": "string",
+          "enum": ["sum", "first", "count", "min", "max", "join"],
+          "description": "Collapses a wildcard/filter match to one value. Omit when path already resolves to a single value."
+        },
+        "fallback": {
+          "description": "Value to use when path resolves to nothing, e.g. 0, \"\", or null."
+        }
+      }
+    },
+
+    "ConditionalSpec": {
+      "type": "object",
+      "required": ["path"],
+      "additionalProperties": false,
+      "minProperties": 2,
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "equals": {},
+        "notEquals": {},
+        "exists": { "type": "boolean" },
+        "greaterThan": { "type": "number" },
+        "lessThan": { "type": "number" }
+      },
+      "description": "Box is skipped entirely (not laid out) unless the comparison against path evaluates true. Exactly one comparison operator is expected alongside path."
+    },
+
+    "RepeatSpec": {
+      "type": "object",
+      "required": ["sourcePath", "rowHeight"],
+      "additionalProperties": false,
+      "properties": {
+        "sourcePath": { "type": "string", "minLength": 1, "description": "Path to the array being iterated, e.g. \"$.income.w2Forms\"." },
+        "rowHeight": { "type": "number", "exclusiveMinimum": 0, "description": "Offset applied per row, in the position's unit." },
+        "direction": { "type": "string", "enum": ["vertical", "horizontal"], "default": "vertical" },
+        "maxRows": { "type": "integer", "minimum": 1, "description": "How many rows the physical form has room for." }
+      }
+    },
+
+    "FieldAnnotation": {
+      "type": "object",
+      "required": ["id", "formLine", "page", "position", "format"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_]+(\\.[A-Za-z0-9_]+)*$",
+          "description": "Unique within the form, stable across formVersion revisions. Convention: <formId>.<box>.<shortName>, dot-separated segments (camelCase or lowercase within a segment)."
+        },
+        "formLine": { "type": "string", "minLength": 1, "description": "The form's own label for the box, copied verbatim from the official form, e.g. \"Box 1\"." },
+        "description": { "type": "string" },
+        "page": { "type": "integer", "minimum": 1 },
+        "position": { "$ref": "#/$defs/Position" },
+        "format": { "$ref": "#/$defs/FormatSpec" },
+        "dataBinding": { "$ref": "#/$defs/DataBinding" },
+        "conditional": { "$ref": "#/$defs/ConditionalSpec" },
+        "repeat": { "$ref": "#/$defs/RepeatSpec" }
+      },
+      "allOf": [
+        {
+          "description": "dataBinding is required unless format.type is \"literal\" (static text with no taxpayer value).",
+          "if": {
+            "type": "object",
+            "properties": { "format": { "type": "object", "properties": { "type": { "const": "literal" } }, "required": ["type"] } },
+            "required": ["format"]
+          },
+          "then": {},
+          "else": { "required": ["dataBinding"] }
+        }
+      ]
+    }
+  }
+}

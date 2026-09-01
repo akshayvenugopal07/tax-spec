@@ -1,0 +1,14 @@
+{
+  "name": "tax-spec",
+  "version": "1.0.0",
+  "description": "A data structure for annotating boxes on U.S. tax forms, plus a TypeScript reference implementation.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0"
+  }
+}
