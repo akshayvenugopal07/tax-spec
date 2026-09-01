@@ -51,6 +51,33 @@
     This project defines the file that sits between them.
   </p>
 
+  <h3>The actual flow</h3>
+  <div class="step">
+    <div class="n">1</div>
+    <div class="body"><h3>Blank form</h3><p>The official W-2/1040/whatever PDF or image, with nothing filled in. You already have this — it's public, published by the IRS/SSA.</p></div>
+  </div>
+  <div class="step">
+    <div class="n">2</div>
+    <div class="body"><h3>Annotation file (<code>annotation.json</code>)</h3><p>A one-time "stencil": for every box on that blank form, it says <em>where</em> the box is (pixel coordinates), <em>how</em> the value should look (currency? masked SSN?), and <em>which</em> field of your app's data it needs (<code>$.income.w2Forms[0].box1Wages</code>). Someone writes this once per form, not per user.</p></div>
+  </div>
+  <div class="step">
+    <div class="n">3</div>
+    <div class="body"><h3>Your app's data (<code>values.json</code>)</h3><p>A specific user's actual numbers, in whatever shape your database already uses.</p></div>
+  </div>
+  <div class="step">
+    <div class="n">4</div>
+    <div class="body"><h3>Resolver</h3><p>Takes #2 + #3 and spits out: "put <code>$48,500.00</code> at <code>x=500, y=52</code>." It does this for every box.</p></div>
+  </div>
+  <div class="step">
+    <div class="n">5</div>
+    <div class="body"><h3>A renderer draws it</h3><p>Takes that list and actually stamps the text onto the blank PDF/image at those coordinates.</p></div>
+  </div>
+  <p class="lede" style="font-size:1rem">
+    Nothing here reads a filled-out form (that would be OCR, a different
+    problem). This is the reverse direction: you already have the numbers,
+    and this is how they know where to land on the page.
+  </p>
+
   <h3>Background</h3>
   <p class="lede" style="font-size:1rem">
     For anyone unfamiliar with how U.S. tax filing actually works day to day,
