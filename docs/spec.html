@@ -61,8 +61,9 @@ official IRS/SSA-published layout for a given tax year, not to guesswork.</li>
   &quot;formVersion&quot;: &quot;2024&quot;,
   &quot;title&quot;: &quot;Wage and Tax Statement&quot;,
   &quot;issuingAgency&quot;: &quot;SSA&quot;,
+  &quot;sourceDocument&quot;: &quot;https://www.ssa.gov/employer/EFW2&amp;EFW2C.htm&quot;,
   &quot;pages&quot;: [
-    { &quot;number&quot;: 1, &quot;width&quot;: 612, &quot;height&quot;: 396, &quot;unit&quot;: &quot;pt&quot; }
+    { &quot;number&quot;: 1, &quot;width&quot;: 612, &quot;height&quot;: 396, &quot;unit&quot;: &quot;pt&quot;, &quot;referenceImageUrl&quot;: &quot;sample-tax-forms/W-2.png&quot; }
   ],
   &quot;fields&quot;: [ /* FieldAnnotation[] — see §4 */ ]
 }
@@ -95,6 +96,11 @@ official IRS/SSA-published layout for a given tax year, not to guesswork.</li>
 <td><code>issuingAgency</code></td>
 <td>string</td>
 <td><code>&quot;IRS&quot;</code> or <code>&quot;SSA&quot;</code> — which agency publishes this form's layout.</td>
+</tr>
+<tr>
+<td><code>sourceDocument</code></td>
+<td>string</td>
+<td>(optional) URL or citation for the official PDF this annotation was measured from — see §5.</td>
 </tr>
 <tr>
 <td><code>pages</code></td>
@@ -215,6 +221,12 @@ from the official form so a reviewer can cross-check every box against the sourc
 document. This matters because layouts shift between tax years; re-annotating a
 new <code>formVersion</code> means re-measuring against that year's official form, not
 reusing last year's coordinates.</li>
+<li><strong>Provenance metadata</strong>: <code>FormTemplate.sourceDocument</code> and <code>Page.referenceImageUrl</code>
+are optional but recommended — they record, respectively, a URL/citation for the
+official PDF the positions were measured from, and a rasterized image of that page
+a reviewer can overlay <code>position</code> boxes on top of to sanity-check an annotation
+without re-opening the original PDF. Neither is read by the resolver; they exist
+purely for traceability and review tooling.</li>
 </ul>
 <h2>6. Formatting</h2>
 <pre><code class="language-jsonc">&quot;format&quot;: {
@@ -387,7 +399,33 @@ field ids) is a natural v2 addition.</li>
 <li><strong>Schema-validated <code>path</code> expressions</strong> — today a bad <code>path</code> just resolves to
 the <code>fallback</code> at runtime. Validating paths against a taxpayer data schema
 ahead of time (catching typos before print time) is a reasonable v2 addition.</li>
+<li><strong><code>aggregate: &quot;join&quot;</code> has no separator</strong> — <code>DataBinding</code> doesn't expose a
+<code>joinSeparator</code>; a renderer has to guess between <code>&quot;, &quot;</code>, <code>&quot;; &quot;</code>, <code>&quot;\n&quot;</code>, etc.
+Should be an explicit (optional, defaulted) property.</li>
+<li><strong><code>fallback</code> formatting is unstated</strong> — it isn't specified whether <code>fallback</code>
+is run through <code>format</code> like a real resolved value (e.g. does
+<code>fallback: 0</code> on a <code>currency</code> box print as <code>&quot;0.00&quot;</code>, or literally <code>&quot;0&quot;</code>?).
+Needs a documented rule, most likely &quot;yes, formatted the same way.&quot;</li>
+<li><strong><code>repeat</code> + <code>conditional</code> interaction is unstated</strong> — a field can carry both
+blocks today, but it's undefined whether <code>conditional</code> is evaluated once for
+the field as a whole or per-row against each array item during a <code>repeat</code>.
+Needs a documented rule, most likely &quot;per-row.&quot;</li>
+<li><strong><code>RepeatSpec.rowHeight</code> naming is direction-biased</strong> — when
+<code>direction: &quot;horizontal&quot;</code>, <code>rowHeight</code> is reused as the per-column x-offset,
+which reads oddly. A neutral name like <code>stepSize</code> would fit both directions
+better; kept as <code>rowHeight</code> for now to avoid an unnecessary breaking rename
+in this POC.</li>
+<li><strong>No bounds checking between <code>position</code> and <code>page</code></strong> — nothing today
+validates that a field's <code>position</code> (or, for a <code>repeat</code> field, its
+furthest offset row) actually fits within its page's <code>width</code>/<code>height</code>.
+Worth adding as schema-level or resolver-level validation.</li>
+<li><strong><code>repeat</code> overflow policy stays unmodeled</strong> — <code>maxRows</code> caps how many rows
+fit, but there's still no field for what a renderer should do past that cap
+(continuation page id, &quot;see attached&quot; flag, etc.); each renderer invents its
+own convention today.</li>
 </ul>
+<p>None of the six items above are implemented in this POC — they're recorded
+here as known gaps for a v2 pass, not part of the current schema or resolver.</p>
 
 </div>
 </main>

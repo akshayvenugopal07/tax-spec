@@ -64,8 +64,9 @@ One `FormTemplate` document describes one form, for one tax year.
   "formVersion": "2024",
   "title": "Wage and Tax Statement",
   "issuingAgency": "SSA",
+  "sourceDocument": "https://www.ssa.gov/employer/EFW2&EFW2C.htm",
   "pages": [
-    { "number": 1, "width": 612, "height": 396, "unit": "pt" }
+    { "number": 1, "width": 612, "height": 396, "unit": "pt", "referenceImageUrl": "sample-tax-forms/W-2.png" }
   ],
   "fields": [ /* FieldAnnotation[] — see §4 */ ]
 }
@@ -77,6 +78,7 @@ One `FormTemplate` document describes one form, for one tax year.
 | `formVersion`     | string              | Tax year the layout matches, e.g. `"2024"`. IRS forms are revised yearly — this is what lets a renderer pick the right template. |
 | `title`           | string              | Official form title, for display.                                     |
 | `issuingAgency`   | string              | `"IRS"` or `"SSA"` — which agency publishes this form's layout.       |
+| `sourceDocument`  | string              | (optional) URL or citation for the official PDF this annotation was measured from — see §5. |
 | `pages`           | `Page[]`            | Physical page geometry — see §5.                                       |
 | `fields`          | `FieldAnnotation[]` | One entry per printable box, or per repeating box template — see §4.   |
 
@@ -138,6 +140,12 @@ One `FormTemplate` document describes one form, for one tax year.
   document. This matters because layouts shift between tax years; re-annotating a
   new `formVersion` means re-measuring against that year's official form, not
   reusing last year's coordinates.
+- **Provenance metadata**: `FormTemplate.sourceDocument` and `Page.referenceImageUrl`
+  are optional but recommended — they record, respectively, a URL/citation for the
+  official PDF the positions were measured from, and a rasterized image of that page
+  a reviewer can overlay `position` boxes on top of to sanity-check an annotation
+  without re-opening the original PDF. Neither is read by the resolver; they exist
+  purely for traceability and review tooling.
 
 ## 6. Formatting
 
@@ -292,3 +300,30 @@ this is the full W-2 worked out end to end in `samples/w2/`.
 - **Schema-validated `path` expressions** — today a bad `path` just resolves to
   the `fallback` at runtime. Validating paths against a taxpayer data schema
   ahead of time (catching typos before print time) is a reasonable v2 addition.
+- **`aggregate: "join"` has no separator** — `DataBinding` doesn't expose a
+  `joinSeparator`; a renderer has to guess between `", "`, `"; "`, `"\n"`, etc.
+  Should be an explicit (optional, defaulted) property.
+- **`fallback` formatting is unstated** — it isn't specified whether `fallback`
+  is run through `format` like a real resolved value (e.g. does
+  `fallback: 0` on a `currency` box print as `"0.00"`, or literally `"0"`?).
+  Needs a documented rule, most likely "yes, formatted the same way."
+- **`repeat` + `conditional` interaction is unstated** — a field can carry both
+  blocks today, but it's undefined whether `conditional` is evaluated once for
+  the field as a whole or per-row against each array item during a `repeat`.
+  Needs a documented rule, most likely "per-row."
+- **`RepeatSpec.rowHeight` naming is direction-biased** — when
+  `direction: "horizontal"`, `rowHeight` is reused as the per-column x-offset,
+  which reads oddly. A neutral name like `stepSize` would fit both directions
+  better; kept as `rowHeight` for now to avoid an unnecessary breaking rename
+  in this POC.
+- **No bounds checking between `position` and `page`** — nothing today
+  validates that a field's `position` (or, for a `repeat` field, its
+  furthest offset row) actually fits within its page's `width`/`height`.
+  Worth adding as schema-level or resolver-level validation.
+- **`repeat` overflow policy stays unmodeled** — `maxRows` caps how many rows
+  fit, but there's still no field for what a renderer should do past that cap
+  (continuation page id, "see attached" flag, etc.); each renderer invents its
+  own convention today.
+
+None of the six items above are implemented in this POC — they're recorded
+here as known gaps for a v2 pass, not part of the current schema or resolver.

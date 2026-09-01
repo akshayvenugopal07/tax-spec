@@ -16,6 +16,8 @@ export interface Page {
   width: number;
   height: number;
   unit: Unit;
+  /** Path/URL to a rasterized image of this page, for overlaying `position` boxes during review. Not used by the resolver. */
+  referenceImageUrl?: string;
 }
 
 /**
@@ -173,6 +175,8 @@ export interface FormTemplate {
   title: string;
   /** Which agency publishes this form's official layout. */
   issuingAgency?: "IRS" | "SSA";
+  /** URL or citation for the official IRS/SSA PDF this annotation was measured from. See SPEC.md §5. */
+  sourceDocument?: string;
   pages: Page[];
   fields: FieldAnnotation[];
 }

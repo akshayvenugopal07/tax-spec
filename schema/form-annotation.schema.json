@@ -26,6 +26,10 @@
       "description": "Agency that publishes this form's official layout.",
       "enum": ["IRS", "SSA"]
     },
+    "sourceDocument": {
+      "type": "string",
+      "description": "URL or citation for the official IRS/SSA PDF this annotation's positions and labels were measured from, e.g. \"https://www.irs.gov/pub/irs-pdf/fw2.pdf\". Lets a reviewer trace every box back to its origin; see SPEC.md §5."
+    },
     "pages": {
       "type": "array",
       "description": "Physical page geometry, one entry per page of the form.",
@@ -54,7 +58,11 @@
         "number": { "type": "integer", "minimum": 1, "description": "1-indexed page number." },
         "width": { "type": "number", "exclusiveMinimum": 0 },
         "height": { "type": "number", "exclusiveMinimum": 0 },
-        "unit": { "$ref": "#/$defs/Unit" }
+        "unit": { "$ref": "#/$defs/Unit" },
+        "referenceImageUrl": {
+          "type": "string",
+          "description": "Path or URL to a rasterized image of this page (matching `width`/`height`), for visually overlaying `position` boxes during review. Not used by the resolver."
+        }
       }
     },
 

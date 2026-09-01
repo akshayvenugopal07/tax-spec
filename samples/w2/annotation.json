@@ -3,8 +3,9 @@
   "formVersion": "2014",
   "title": "Wage and Tax Statement",
   "issuingAgency": "SSA",
+  "sourceDocument": "https://www.ssa.gov/employer/EFW2&EFW2C.htm",
   "pages": [
-    { "number": 1, "width": 720, "height": 486, "unit": "pt" }
+    { "number": 1, "width": 720, "height": 486, "unit": "pt", "referenceImageUrl": "sample-tax-forms/W-2.png" }
   ],
   "fields": [
     {
