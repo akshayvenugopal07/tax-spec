@@ -1,0 +1,44 @@
+{
+  "_comment": "High earner, statutory employee, 5 box 12 entries (one more than repeat.maxRows: 4 — the 5th, code 'W', should be dropped rather than overflow the box), state + local tax both present.",
+  "employee": {
+    "ssn": "555-11-2222",
+    "name": "Priya K    NAIR",
+    "street": "88 Skyline Ave, Apt 12B",
+    "cityStateZip": "Metro City, NY 10001"
+  },
+  "employer": {
+    "ein": "44-1122334",
+    "name": "Ironclad Holdings Inc",
+    "street": "500 Tower Plaza",
+    "cityStateZip": "Metro City, NY 10001"
+  },
+  "controlNumber": "EXEC-2024-091",
+  "box1Wages": 312450.75,
+  "box2FederalTaxWithheld": 78900.10,
+  "box3SocialSecurityWages": 168600.00,
+  "box4SocialSecurityTaxWithheld": 10453.20,
+  "box5MedicareWages": 312450.75,
+  "box6MedicareTaxWithheld": 4530.53,
+  "box12Entries": [
+    { "code": "D", "amount": 22500.00 },
+    { "code": "DD", "amount": 14200.00 },
+    { "code": "P", "amount": 6000.00 },
+    { "code": "C", "amount": 850.00 },
+    { "code": "W", "amount": 3000.00 }
+  ],
+  "box13": {
+    "statutoryEmployee": true,
+    "retirementPlan": true,
+    "thirdPartySickPay": false
+  },
+  "state": {
+    "state": "NY",
+    "employerStateId": "NY-778812",
+    "stateWages": 312450.75,
+    "stateIncomeTax": 21870.00,
+    "localWages": 312450.75,
+    "localIncomeTax": 11250.00,
+    "localityName": "NYC"
+  },
+  "taxYear": "2024"
+}

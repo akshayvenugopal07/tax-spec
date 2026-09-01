@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tax Form Annotation Spec</title>
+<meta name="description" content="A data structure for annotating boxes on U.S. tax forms — position, formatting, deep data references, conditional rendering and repeating rows.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-nav">
+  <div class="inner">
+    <a class="brand" href="index.html">Tax Form Annotation Spec</a>
+    <nav>
+      <a href="index.html" class="active">Overview</a>
+      <a href="spec.html">Full spec</a>
+      <a href="https://github.com/akshayvenugopal07/tax-spec">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="eyebrow">Instead — technical assessment</div>
+  <h1>A data structure for annotating U.S. tax forms</h1>
+  <p class="lede">
+    Where every box on a form is, how it's formatted, and which value from a
+    taxpayer's data belongs in it — so a renderer someone else writes can
+    print the right value into the right box.
+  </p>
+</div>
+
+<main>
+
+  <h2>The problem</h2>
+  <p>
+    A tax form — a W-2, a 1099-INT, a 1040 — is a fixed page of labeled boxes,
+    laid out however the IRS (or SSA, for a W-2) published it. A taxpayer's
+    actual numbers live somewhere else entirely: in a database, as deeply
+    nested JSON, shaped however the platform that owns the data wants it.
+  </p>
+  <p>
+    Two people typically do this work, at different times, without talking
+    to each other. The <strong>annotator</strong> looks at a blank form and
+    records, per box, where it is, how it should look, and which value it
+    needs. The <strong>renderer</strong> is a separate application — someone
+    else's code — that takes the annotator's file plus a taxpayer's data and
+    stamps the right value into the right box.
+  </p>
+  <p>
+    This project defines the file that sits between them.
+  </p>
+
+  <h2>What this actually produces</h2>
+  <p>
+    The deliverable is a JSON file format — a <strong>FormTemplate</strong> —
+    plus a TypeScript reference implementation that resolves one against a
+    taxpayer's data. Concretely:
+  </p>
+  <div class="grid-3">
+    <div class="card">
+      <span class="badge">JSON</span>
+      <p style="margin-top:10px"><code>schema/form-annotation.schema.json</code> — validates any annotation file against the spec.</p>
+    </div>
+    <div class="card">
+      <span class="badge">TypeScript</span>
+      <p style="margin-top:10px"><code>src/types.ts</code> + <code>src/resolver.ts</code> — typed shape, plus a resolver that turns an annotation + a taxpayer's data into print-ready output.</p>
+    </div>
+    <div class="card">
+      <span class="badge">Worked example</span>
+      <p style="margin-top:10px"><code>samples/w2/</code> — a real W-2 annotated end to end, with four different taxpayer datasets. Live below.</p>
+    </div>
+  </div>
+
+  <h2>The data structure</h2>
+  <p>
+    One <code>FormTemplate</code> document describes one form, for one tax
+    year. It's mostly a list of <code>FieldAnnotation</code>s — one per box.
+  </p>
+  <pre><code>FormTemplate
+├── formId, formVersion, title          — which form, which year
+├── pages[]                             — physical page geometry
+└── fields[]                            — one FieldAnnotation per box
+      ├── id                            — stable, unique identity
+      ├── position                      — x, y, width, height
+      ├── format                        — how the value should look
+      ├── dataBinding                   — which value, from where
+      ├── conditional (optional)        — whether to draw it at all
+      └── repeat (optional)             — expand into N rows</code></pre>
+  <p>
+    Full field-by-field reference, including every property, is in the
+    <a href="spec.html">full spec</a>.
+  </p>
+
+  <h2>What each part means</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Concept</th><th>What it answers</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Position</strong></td><td>Exactly where the box sits on the page</td><td><code>{ x: 500, y: 52, width: 90, height: 16, unit: "pt" }</code></td></tr>
+        <tr><td><strong>Format</strong></td><td>How the resolved value should print</td><td><code>currency</code>, <code>ssn</code> (masked), <code>date</code>, <code>boolean</code>…</td></tr>
+        <tr><td><strong>Data binding</strong></td><td>Which value, from where in a deeply nested dataset</td><td><code>$.income.w2Forms[*].box1Wages</code></td></tr>
+        <tr><td><strong>Stable identity</strong></td><td>A box's identity survives form revisions</td><td><code>id: "w2.box1.wages"</code></td></tr>
+        <tr><td><strong>Conditional</strong></td><td>Whether the box renders at all</td><td>Only draw state tax boxes if state data exists</td></tr>
+        <tr><td><strong>Repeat</strong></td><td>One template expands into N rows</td><td>Box 12 codes — 1 template → up to 4 rows</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>How it helps</h2>
+  <div class="step">
+    <div class="n">1</div>
+    <div class="body"><h3>Annotator and renderer never coordinate</h3><p>The annotation file is the entire contract. Either side can be rebuilt independently as long as it agrees with the spec.</p></div>
+  </div>
+  <div class="step">
+    <div class="n">2</div>
+    <div class="body"><h3>One format, any platform's data shape</h3><p>The data-binding path reaches into whatever nested structure a platform already has — no data migration needed to adopt it.</p></div>
+  </div>
+  <div class="step">
+    <div class="n">3</div>
+    <div class="body"><h3>Forms change yearly, annotations don't rot</h3><p><code>formVersion</code> keeps each year's layout self-contained, and stable <code>id</code>s let tooling track a box across years.</p></div>
+  </div>
+
+  <h2>How the sample W-2 was annotated</h2>
+  <p>
+    <code>sample-tax-forms/W-2.png</code> was overlaid with a pixel ruler to
+    read each box's coordinates directly off the image, the same way an
+    annotator would work from a scanned form:
+  </p>
+  <div class="card">
+    <img src="images/w2.png" alt="Sample W-2 form" style="border-radius:6px;">
+  </div>
+  <p>
+    Every value box, the box-12 code/amount columns (annotated once, as a
+    <code>repeat</code> template), the three box-13 checkboxes, and the
+    state/local section (gated behind a <code>conditional</code>, since not
+    every W-2 has state tax) were measured this way and written to
+    <code>samples/w2/annotation.json</code> — 25 field annotations in total.
+  </p>
+
+  <h2>Worked example</h2>
+  <p>
+    Pick a taxpayer below. The same <code>samples/w2/annotation.json</code>
+    is resolved live in your browser, against each dataset, and the results
+    are drawn as boxes on the actual form image.
+  </p>
+
+  <div class="demo-controls">
+    <label for="dataset">Taxpayer dataset</label>
+    <select id="dataset">
+      <option value="values.json">Baseline (matches the printed form)</option>
+      <option value="values-minimal.json">Minimal — no state tax, no box 12</option>
+      <option value="values-executive.json">High earner — 5 box-12 entries, state + local tax</option>
+      <option value="values-parttime.json">Part-time — state tax, no local tax</option>
+    </select>
+  </div>
+
+  <div class="demo-stage">
+    <div class="surface" id="stage">
+      <img src="images/w2.png" alt="W-2 with resolved values overlaid">
+      <!-- boxes injected here -->
+    </div>
+  </div>
+  <p class="demo-legend" id="legend"></p>
+
+  <details class="demo-json">
+    <summary>View resolved JSON output</summary>
+    <pre><code id="resolved-json"></code></pre>
+  </details>
+
+  <hr class="rule">
+
+  <h2>Out of scope / future enhancements</h2>
+  <ul>
+    <li><strong>Rendering engine</strong> — drawing onto an actual PDF/image is a renderer's job, not this spec's. This demo draws plain HTML boxes to prove the coordinates and values are correct.</li>
+    <li><strong>Multi-value boxes</strong> — a box showing two numbers side by side needs two <code>FieldAnnotation</code>s today.</li>
+    <li><strong>Computed/derived boxes</strong> — subtotal lines need to be precomputed into the values file; a <code>dataBinding.expression</code> is a natural v2 addition.</li>
+    <li><strong>Localization</strong> — formatting assumes U.S. conventions today.</li>
+  </ul>
+  <p><a href="spec.html">Read the full spec →</a></p>
+
+</main>
+
+<footer class="site-footer">
+  Built for the Instead technical assessment. <a href="https://github.com/akshayvenugopal07/tax-spec">Source on GitHub</a>.
+</footer>
+
+<script type="module" src="demo.js"></script>
+</body>
+</html>

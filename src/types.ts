@@ -66,7 +66,7 @@ interface DateFormatSpec extends FormatSpecBase {
 
 interface MaskedFormatSpec extends FormatSpecBase {
   type: "ssn" | "ein";
-  /** e.g. "XXX-XX-1234" — how much of the number to reveal. */
+  /** Redaction pattern, e.g. "XXX-XX-####": X redacts, # reveals the real digit, others print as-is. */
   mask?: string;
 }
 

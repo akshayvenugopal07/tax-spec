@@ -137,7 +137,7 @@ One `FormTemplate` document describes one form, for one tax year.
 | `alignment`     | string  | all                | `"left"` \| `"right"` \| `"center"`. Numbers are conventionally right-aligned. |
 | `negativeStyle` | string  | currency, number   | How a **negative** resolved value should be printed. `"minus"` → `"-100.00"`. `"parentheses"` → `"(100.00)"`, the accounting convention many IRS forms use. `"redText"` is a renderer hint (no ASCII change) for forms that print negatives in red. |
 | `dateFormat`    | string  | date               | e.g. `"MM/DD/YYYY"`.                                                     |
-| `mask`          | string  | ssn, ein           | e.g. `"XXX-XX-1234"` — how much of the number to reveal, since SSNs are often partially redacted on printed copies. |
+| `mask`          | string  | ssn, ein           | A redaction pattern, e.g. `"XXX-XX-####"`: `X` prints literally (redacted), `#` reveals the actual digit at that position (right-aligned against the real value), anything else (like `-`) prints as-is. Omit for no redaction. |
 | `literalValue`  | string  | literal            | For `type: "literal"` boxes with no `dataBinding` — static form text, not taxpayer data. |
 
 ## 7. Data binding — referencing a deeply nested dataset

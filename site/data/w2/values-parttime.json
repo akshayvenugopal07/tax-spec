@@ -1,0 +1,37 @@
+{
+  "_comment": "Part-time worker with state tax but no local/city tax. Exercises the split conditional: box 15-17 (state) should print, box 18-20 (local) should be skipped, because they're gated on two different paths (state.state vs state.localityName).",
+  "employee": {
+    "ssn": "111-22-3333",
+    "name": "Marcus T    OWENS",
+    "street": "77 Willow Ln",
+    "cityStateZip": "Lakeside, OH 43001"
+  },
+  "employer": {
+    "ein": "33-4455667",
+    "name": "Lakeside Retail Group",
+    "street": "200 Commerce Dr",
+    "cityStateZip": "Lakeside, OH 43001"
+  },
+  "controlNumber": "PT-4471",
+  "box1Wages": 15600.00,
+  "box2FederalTaxWithheld": 940.00,
+  "box3SocialSecurityWages": 15600.00,
+  "box4SocialSecurityTaxWithheld": 967.20,
+  "box5MedicareWages": 15600.00,
+  "box6MedicareTaxWithheld": 226.20,
+  "box12Entries": [
+    { "code": "DD", "amount": 2100.00 }
+  ],
+  "box13": {
+    "statutoryEmployee": false,
+    "retirementPlan": false,
+    "thirdPartySickPay": true
+  },
+  "state": {
+    "state": "OH",
+    "employerStateId": "OH-55219",
+    "stateWages": 15600.00,
+    "stateIncomeTax": 468.00
+  },
+  "taxYear": "2024"
+}

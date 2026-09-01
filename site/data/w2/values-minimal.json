@@ -1,0 +1,23 @@
+{
+  "_comment": "Minimal taxpayer — no control number, no box 12 entries, no state/local tax at all. Exercises dataBinding.fallback (controlNumber, box13 checkboxes) and conditional (box 15-20 should all be skipped, not printed blank).",
+  "employee": {
+    "ssn": "987-65-4321",
+    "name": "Sam Q    RIVERA",
+    "street": "9 Birch Court",
+    "cityStateZip": "Smallville, TX 75001"
+  },
+  "employer": {
+    "ein": "22-9988776",
+    "name": "Corner Bakery LLC",
+    "street": "1 Oven Way",
+    "cityStateZip": "Smallville, TX 75001"
+  },
+  "box1Wages": 9200.00,
+  "box2FederalTaxWithheld": 310.00,
+  "box3SocialSecurityWages": 9200.00,
+  "box4SocialSecurityTaxWithheld": 570.40,
+  "box5MedicareWages": 9200.00,
+  "box6MedicareTaxWithheld": 133.40,
+  "box12Entries": [],
+  "taxYear": "2024"
+}
