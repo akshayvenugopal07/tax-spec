@@ -1,4 +1,4 @@
-# Tax Form Annotation Spec (v1)
+# Tax Form Annotation Spec
 
 ## 1. The problem
 
